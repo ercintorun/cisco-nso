@@ -1,5 +1,6 @@
 ========INSTALL NCS on REDHAT
 https://developer.cisco.com/docs/nso/guides/#!installation/local-install-steps
+https://developer.cisco.com/docs/nso/guides/#!start/start
 -----------Installing Prerequisites 
 yum install java-1.8.0-openjdk 
 yum install ant
