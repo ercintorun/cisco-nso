@@ -6,20 +6,19 @@ https://developer.cisco.com/learning/tracks/get_started_with_nso learn nso the e
 https://devnetsandbox.cisco.com/RM/Diagram/Index/43964e62-a13c-4929-bde7-a2f68ad6b27c?diagramType=Topology  
 
 -----------Installing Prerequisites 
+#without development tools netsim gives "make" errors. 
+#python3-setuptools by default installed on redhat
+
+yum groupinstall 'Development Tools' 
 yum install java-1.8.0-openjdk 
 yum install ant
 yum install python3-setuptools
-
 
 wget https://bootstrap.pypa.io/get-pip.py
 python3 ./get-pip.py
 
 pip3 install paramiko
 pip3 install requests
-
-yum install tar gzip which
-yum install  ssh-keygen openssl find ???
-
 
 -----------Download the packages
 [root@cisco-nso lab]# ls
@@ -53,8 +52,23 @@ ncs-setup --package /home/lab/nso-6.1/packages/neds/cisco-ios-cli-6.92/ \
 
 --------Start nso instance
 cd /home/lab/nso-6.1/nso-instance1
-[root@cisco-nso nso-instance1]$ ncs
-[root@cisco-nso nso-instance1]$ ncs --status | grep status 
-[root@cisco-nso nso-instance1]$  tail -f logs/devel.log
+ncs
+ncs --status | grep status 
+tail -f logs/devel.log
+ncs --stop 
 
+-------Playing with example Labs
+source /home/lab/nso-6.1/ncsrc
+cd /home/lab/nso-6.1/examples.ncs/getting-started/using-ncs/1-simulated-cisco-ios
+ncs-netsim create-network /home/lab/nso-6.1/packages/neds/cisco-ios-cli-3.8 3 ios
 
+[root@cisco-nso 1-simulated-cisco-ios]# ncs-netsim create-network /home/lab/nso-6.1/packages/neds/cisco-ios-cli-3.8 3 ios
+DEVICE ios0 CREATED
+DEVICE ios1 CREATED
+DEVICE ios2 CREATED
+
+ncs-setup --dest .
+nst-netsim start
+ncs
+
+----
