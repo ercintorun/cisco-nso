@@ -12,12 +12,12 @@ NSO keeps a copy of the device configuration in CDB, and you can quickly check i
 
     devices device ios1 check-sync
 
-#Configuring The Network 
+## Configuring The Network 
 Go into configuration mode using the command
 
     config
 
-##Examining Configuration
+### Examining Configuration
 You can examine the configuration for the device ios1:
 
     show full-configuration devices device ios1 config | nomore
