@@ -1,3 +1,9 @@
+# NSO INSTALLATION MODES
+
+System Install Use when installing NSO for a centralized, "always-on", production grade purpose. You configure it as a system daemon that starts and ends with the underlying operating system. The default credentials and the application installation locations align with a typical Linux application function.
+
+Local Install Use for development and evaluation purposes. The installation unpacks all the application components, including documentation and examples, and you instantiate and start instances of NSO on demand. You use a Local Install on a single workstation to have multiple, unrelated instances of NSO for different demos (not at the same time). This install includes default credentials for ease of use and you typically install it in an easily accessible folder.
+
 # INSTALL NCS on REDHAT
 ## Installing Prerequisites 
 without development tools netsim gives "make" errors. 
