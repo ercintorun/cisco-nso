@@ -1,3 +1,4 @@
+##Create Service Package
 Services simplifies device configuration by automating service provisioning.
 To add a service, you need to create a service package, which will have some pre-built files and directories. 
 
@@ -41,3 +42,36 @@ To add a service, you need to create a service package, which will have some pre
     ' > ~/src/packages/simple-service/templates/simple-service-template.xml
     make -C ~/src/packages/simple-service/src
     echo "packages reload" | ncs_cli -C -u admin
+
+We just added a service package to NSO named simple-service available which sets the enable password on a Cisco IOS device. Check the package installation status:
+
+    show packages package oper-status
+
+##Configuring a Service 
+Creates a service instance named test1 that configures the device ios0 to have the secret mypasswd.
+
+    config 
+    simple-service test1 device ios0 secret mypasswd
+    show configuration
+    commit dry-run
+    commit dry-run outformat native
+    commit
+    
+##Modifying a Service 
+While in service context, change the secret to securepasswd: 
+
+    secret securepasswd
+    commit dry-run
+    commit
+
+Leave service context and get modifications:
+    top
+    simple-service test1 get-modifications
+
+The next one is re-deploy, which tries to deploy the service again. This is especially useful if manual changes have been made to the device configuration and you want to reassert the service configuration:
+    simple-service test1 re-deploy
+
+Delete service: 
+    no simple-service test1
+    commit dry-run
+    commit
