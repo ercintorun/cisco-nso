@@ -7,6 +7,7 @@ The main ways to develop a service are:
 
 Sample files:
 service.yang: This file describes the interface to the service and includes all the fields and their types. It can also contain constraints such as pattern or must expressions
+
     module simple-service {
     namespace "http://com/example/simpleservice";
     prefix simple-service;
