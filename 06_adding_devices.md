@@ -52,4 +52,7 @@ You create device groups to organize your devices into logical groups. Then you 
     commit
     end
     devices device-group IOS-DEVICES check-sync
+
+
+
     
