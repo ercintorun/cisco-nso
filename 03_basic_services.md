@@ -1,4 +1,4 @@
-##Create Service Package
+## Create Service Package
 Services simplifies device configuration by automating service provisioning.
 To add a service, you need to create a service package, which will have some pre-built files and directories. 
 
@@ -47,7 +47,7 @@ We just added a service package to NSO named simple-service available which sets
 
     show packages package oper-status
 
-##Configuring a Service 
+## Configuring a Service 
 Creates a service instance named test1 that configures the device ios0 to have the secret mypasswd.
 
     config 
@@ -57,7 +57,7 @@ Creates a service instance named test1 that configures the device ios0 to have t
     commit dry-run outformat native
     commit
     
-##Modifying a Service 
+## Modifying a Service 
 While in service context, change the secret to securepasswd: 
 
     secret securepasswd
