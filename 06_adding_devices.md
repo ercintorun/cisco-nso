@@ -44,6 +44,7 @@ Close the terminal session to the production system install. Using your local in
     
 ## Grouping Devices Together
 You create device groups to organize your devices into logical groups. Then you can apply similar configuration or take similar actions on a group.
+
     devices device-group IOS-DEVICES
     device-name internet-rtr01
     device-name dist-rtr01
