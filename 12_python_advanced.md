@@ -50,5 +50,102 @@ Below code snippet prints out the available object methods associated with the d
     ['__class__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__get__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__self__', '__self_class__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__thisclass__', 'active_settings', 'add_capability', 'address', 'address_choice', 'al__alarm_summary', 'apply_template', 'authgroup', 'capability', 'check_sync', 'check_yang_modules', 'choice_lsa', 'commit_queue', 'compare_config', 'config', 'connect', 'connect_retries', 'connect_timeout', 'copy_capabilities', 'delete_config', 'description', 'device_profile', 'device_type', 'disconnect', 'find_capabilities', 'instantiate_from_other_device', 'last_changed', 'live_status', 'live_status_protocol', 'load_native_config', 'local_user', 'location', 'lsa', 'lsa_remote_node', 'migrate', 'module', 'name', 'ned_keep_alive', 'ned_settings', 'netconf_notifications', 'no_lsa', 'no_overwrite', 'no_wait_for_lock', 'notifications', 'out_of_sync_commit_behaviour', 'ping', 'platform', 'port', 'read_timeout', 'rpc', 'scp_from', 'scp_to', 'service_list', 'session_limits', 'session_pool', 'snmp_notification_address', 'source', 'ssh', 'ssh_algorithms', 'ssh_keep_alive', 'state', 'sync_from', 'sync_to', 'trace', 'trace_output', 'use_lsa', 'wait_for_lock', 'wait_for_lock_choice', 'write_timeout']
     >>> 
 
-## Manipulating Device Data 
+# Manipulating Device Data 
     
+To use NSO Python API, you typically run the Python application on the same machine as NSO, as it uses TCP socket IPC to communicate with the NSO daemon
+
+it is incumbent on the NSO Python developer to have a working knowledge of the NSO and NED YANG model or reference the WebUI to see the YANG types needed for a desired Python activity
+  
+#Python Examples 
+## CDP Audit
+  
+    -----nso-test.py
+    import ncs
+    with ncs.maapi.single_read_trans("admin", "python", groups=["ncsadmin"]) as t:
+        root = ncs.maagic.get_root(t)
+        device = root.devices.device["device-name-here"]
+        cdp_result = device.config.ios__cdp.run
+        print(
+            "For Device {}, CDP being enabled is {}".format(device.name, cdp_result)
+        ) 
+    -----
+    developer:src > python3 nso-test.py 
+    For Device netsim-ios, CDP being enabled is True
+    
+## Interface Audit
+
+    -----nso-test.py
+    import ncs
+    with ncs.maapi.single_read_trans("admin", "python", groups=["ncsadmin"]) as t:
+        root = ncs.maagic.get_root(t)
+        device = root.devices.device["device-name"]
+        for interface in device.config.ios__interface:
+            for if_type in device.config.ios__interface[interface]:
+                if hasattr(if_type, "name"):
+                    print(
+                        f'Device {device.name}, Interface {if_type} {if_type.name}'
+                    )
+    -----
+    
+    developer:src > python3 nso-test.py 
+    Device netsim-ios, Interface Loopback 0
+    Device netsim-ios, Interface FastEthernet 0/0
+    Device netsim-ios, Interface FastEthernet 1/0
+    Device netsim-ios, Interface FastEthernet 1/1
+    
+    
+use the NSO CLI to find the path to the device configuration and see the namespace ios::
+
+    ncs_cli -C -u admin
+    paginate false
+    show running-config devices device netsim-ios config | display xpath
+    exit
+
+    ----output
+    developer:~ > ncs_cli -C -u admin
+    admin@ncs# paginate false
+    admin@ncs# show running-config devices device netsim-ios config | display xpath
+    /devices/device[name='netsim-ios']/config/ios:tailfned/device netsim
+    /devices/device[name='netsim-ios']/config/ios:tailfned/police cirmode
+    /devices/device[name='netsim-ios']/config/ios:ip/source-route true
+    /devices/device[name='netsim-ios']/config/ios:ip/vrf[name='my-forward']/bgp/next-hop/Loopback 1
+    /devices/device[name='netsim-ios']/config/ios:ip/http/server false
+    /devices/device[name='netsim-ios']/config/ios:ip/http/secure-server false
+    /devices/device[name='netsim-ios']/config/ios:ip/community-list/number-standard[no='1']/permit
+    /devices/device[name='netsim-ios']/config/ios:ip/community-list/number-standard[no='2']/deny
+    /devices/device[name='netsim-ios']/config/ios:ip/community-list/standard[name='s']/permit
+    /devices/device[name='netsim-ios']/config/ios:class-map[name='a']/prematch match-all
+    /devices/device[name='netsim-ios']/config/ios:class-map[name='cmap1']/prematch match-all
+    /devices/device[name='netsim-ios']/config/ios:class-map[name='cmap1']/match/mpls/experimental/topmost [ 1 ]
+    /devices/device[name='netsim-ios']/config/ios:class-map[name='cmap1']/match/packet/length/max 255
+    /devices/device[name='netsim-ios']/config/ios:class-map[name='cmap1']/match/packet/length/min 2
+    /devices/device[name='netsim-ios']/config/ios:class-map[name='cmap1']/match/qos-group [ 1 ]
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='a']
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='map1']/class[name='c1']/drop
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='map1']/class[name='c1']/estimate/bandwidth
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='map1']/class[name='c1']/estimate/bandwidth/delay-one-in/doi 500
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='map1']/class[name='c1']/estimate/bandwidth/delay-one-in/milliseconds 100
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='map1']/class[name='c1']/priority
+    /devices/device[name='netsim-ios']/config/ios:policy-map[name='map1']/class[name='c1']/priority/percent 33
+    /devices/device[name='netsim-ios']/config/ios:interface/Loopback[name='0']
+    /devices/device[name='netsim-ios']/config/ios:interface/FastEthernet[name='0/0']
+    /devices/device[name='netsim-ios']/config/ios:interface/FastEthernet[name='1/0']
+    /devices/device[name='netsim-ios']/config/ios:interface/FastEthernet[name='1/1']
+    /devices/device[name='netsim-ios']/config/ios:spanning-tree/optimize/bpdu/transmission false
+    /devices/device[name='netsim-ios']/config/ios:router/bgp[as-no='64512']/aggregate-address/address 10.10.10.1
+    /devices/device[name='netsim-ios']/config/ios:router/bgp[as-no='64512']/aggregate-address/mask 255.255.255.251
+    admin@ncs# exit
+
+The path within the application would be:
+Devices - Device - DEVICENAME - CONFIG - IOS:CDP - RUN, with a value set to true.
+
+    python3
+    import ncs
+    with ncs.maapi.single_write_trans('admin', 'python', groups=['ncsadmin']) as t:
+            root = ncs.maagic.get_root(t)
+            device_object = root.devices.device["netsim-ios"].config
+            device_object.ios__cdp.run = True
+            t.apply()
+
+When applying the change, NSO checks to see if the change needs to be done by first checking if the
+device is in sync, and if it is, checking to see if the change even needs to be made. If the change needs to be made, NSO sends the necessary commands and records the rollback for later use.
