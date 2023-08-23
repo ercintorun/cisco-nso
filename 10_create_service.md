@@ -113,7 +113,8 @@ Create a loopback on NSO to see the XML output:
     show configuration
     commit dry-run outformat xml
 
-Output: 
+Output:
+
     data <devices xmlns="http://tail-f.com/ns/ncs">
             <device>
                 <name>dist-rtr01</name>
