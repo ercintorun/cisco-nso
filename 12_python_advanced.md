@@ -108,4 +108,26 @@ Devices - Device - DEVICENAME - CONFIG - IOS:CDP - RUN, with a value set to true
 When applying the change, NSO checks to see if the change needs to be done by first checking if the
 device is in sync, and if it is, checking to see if the change even needs to be made. If the change needs to be made, NSO sends the necessary commands and records the rollback for later use.
 
-## Manipulate Data - Adding/Removing Loopback
+## Manipulate Data - Adding/Removing Loopback
+
+Add:
+
+    python3
+    import ncs
+    with ncs.maapi.single_write_trans('admin', 'python', groups=['ncsadmin']) as t:
+        root = ncs.maagic.get_root(t)
+        device_cdb = root.devices.device["netsim-ios"]
+        device_cdb.config.ios__interface["Loopback"].create("1337")
+        device_cdb.config.ios__interface.Loopback["1337"].ip.address.primary.address = "192.168.1.1"
+        device_cdb.config.ios__interface.Loopback["1337"].ip.address.primary.mask = "255.255.255.252"
+        t.apply()
+
+Remove:
+
+    python3
+    import ncs
+    with ncs.maapi.single_write_trans('admin', 'python', groups=['ncsadmin']) as t:
+        root = ncs.maagic.get_root(t)
+        device_cdb = root.devices.device["netsim-ios"]
+        del device_cdb.config.ios__interface.Loopback["1337"]
+        t.apply()
