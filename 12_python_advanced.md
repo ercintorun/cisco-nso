@@ -21,12 +21,12 @@ The groups parameter is not needed on a local install, but often system installs
 
 ## Access device Information 
 
-python3
-import ncs
-with ncs.maapi.single_read_trans('admin', 'python', groups=['ncsadmin']) as t:
-    root = ncs.maagic.get_root(t)
-    device_object  = root.devices.device["netsim-ios"]
-    print(device_object.name)
+    python3
+    import ncs
+    with ncs.maapi.single_read_trans('admin', 'python', groups=['ncsadmin']) as t:
+        root = ncs.maagic.get_root(t)
+        device_object  = root.devices.device["netsim-ios"]
+        print(device_object.name)
 
 root.devices.device references all the devices in the NSO CDB. Even though the name says '.device' it is a YANG list, not one device.
 You can either reference the NSO YANG model, the NSO GUI, or use the print dir() option in Python to determine available attribute
